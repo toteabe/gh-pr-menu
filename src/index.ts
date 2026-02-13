@@ -482,8 +482,6 @@ async function main() {
     { label: "0) Salir", run: async () => process.exit(0) },
   ] as const;
 
-  //ui.menu.setItems(items.map((i) => i.label));
-
   ui.menuFullLabels = items.map(i => i.label);
 
 // OJO: ancho útil (número) una vez renderizado suele estar en this.menu.width
