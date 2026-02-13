@@ -1,0 +1,23 @@
+{
+  "name": "@evedep/gh-pr-menu-tui",
+  "version": "0.1.0",
+  "bin": {
+    "gh-pr-menu": "dist/cli.js"
+  },
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "blessed": "^0.1.81"
+  },
+  "devDependencies": {
+    "@types/blessed": "^0.1.25",
+    "@types/node": "^22.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}
