@@ -94,7 +94,7 @@ export class UI {
     return max <= 1 ? "…" : label.slice(0, max - 1) + "…";
   }
 
-  async prompInput(opts: {
+  async promptInput(opts: {
     title: string;
     label: string;
     secret?: boolean;

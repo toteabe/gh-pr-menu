@@ -490,6 +490,36 @@ async function main() {
 
   ui.menu.setItems(ui.menuFullLabels.map(t => ui.truncate(t, usable)));
 
+  // Guarda las etiquetas completas
+const fullLabels = items.map(i => i.label);
+
+// (si truncas, aquí harías ui.menu.setItems(truncadas). Si no truncas, se queda tal cual)
+ui.menu.setItems(fullLabels);
+
+// Helper para refrescar la barra de estado con la opción actualmente “seleccionada” (highlight visual)
+const refreshMenuStatus = () => {
+  const idx = (ui.menu as any).selected ?? 0;
+  ui.setStatus(fullLabels[idx] ?? "");
+};
+
+// Refresca al entrar
+refreshMenuStatus();
+
+// Actualiza al moverte por el menú (flechas/vi/etc)
+ui.menu.on("keypress", (_ch: any, key: any) => {
+  const names = new Set(["up","down","k","j","pageup","pagedown","home","end"]);
+  if (!key?.name || !names.has(key.name)) return;
+
+  // Importante: esperar al tick siguiente para que blessed actualice `selected`
+  process.nextTick(refreshMenuStatus);
+});
+
+// Para cambios por ratón/scroll (según terminal)
+ui.menu.on("click", () => process.nextTick(refreshMenuStatus));
+ui.menu.on("wheeldown", () => process.nextTick(refreshMenuStatus));
+ui.menu.on("wheelup", () => process.nextTick(refreshMenuStatus));
+
+
   ui.menu.on("highlight", (_el, idx) => {
     const full = ui.menuFullLabels[idx] ?? "";
     ui.setStatus(full);
