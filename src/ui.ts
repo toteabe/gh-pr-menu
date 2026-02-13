@@ -109,7 +109,7 @@ export class UI {
         top: 2,
         left: 2,
         width: "95%-2",
-        height: 1,
+        height: 3,
         inputOnFocus: true,
         keys: true,
         mouse: true,
@@ -132,6 +132,7 @@ export class UI {
       input.on("submit", (v) => cleanup(String(v ?? "")));
 
       input.focus();
+      input.readInput(); 
       this.screen.render();
     });
   }
