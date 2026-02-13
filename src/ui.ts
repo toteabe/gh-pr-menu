@@ -8,6 +8,9 @@ export class UI {
   content: blessed.Widgets.BoxElement;
   status: blessed.Widgets.BoxElement;
 
+  menuFullLabels: string[] = [];
+
+
   constructor() {
     this.screen = blessed.screen({
       smartCSR: true,
@@ -85,7 +88,13 @@ export class UI {
     this.screen.render();
   }
 
-  async promptInput(opts: {
+  truncate(label: string, max: number) {
+    if (max <= 0) return "";
+    if (label.length <= max) return label;
+    return max <= 1 ? "…" : label.slice(0, max - 1) + "…";
+  }
+
+  async prompInput(opts: {
     title: string;
     label: string;
     secret?: boolean;

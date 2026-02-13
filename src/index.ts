@@ -482,7 +482,21 @@ async function main() {
     { label: "0) Salir", run: async () => process.exit(0) },
   ] as const;
 
-  ui.menu.setItems(items.map((i) => i.label));
+  //ui.menu.setItems(items.map((i) => i.label));
+
+  ui.menuFullLabels = items.map(i => i.label);
+
+// OJO: ancho útil (número) una vez renderizado suele estar en this.menu.width
+  const w = typeof ui.menu.width === "number" ? ui.menu.width : 30; // fallback
+  const usable = Math.max(10, w - 2 - 1); // border(2) + scrollbar(1)
+
+  ui.menu.setItems(ui.menuFullLabels.map(t => ui.truncate(t, usable)));
+
+  ui.menu.on("highlight", (_el, idx) => {
+    const full = ui.menuFullLabels[idx] ?? "";
+    ui.setStatus(full);
+  });
+
   ui.menu.on("select", async (_el, idx) => {
     try {
       ui.setStatus("Ejecutando...");
