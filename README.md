@@ -38,7 +38,6 @@ npm i -g .
 gh-pr-menu
 ```
 
-
 ## Controles
 - `↑/↓` navegar por el menú
 - `Enter` ejecutar opción
