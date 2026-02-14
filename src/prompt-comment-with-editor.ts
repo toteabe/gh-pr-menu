@@ -16,28 +16,26 @@ export async function promptCommentWithEditor(
       label: ` ${title} `,
       padding: { left: 1, right: 1, top: 1, bottom: 1 },
       content:
-        "Se abrirá tu editor ($EDITOR).\n" +
+        "Se abrirá tu editor (por defecto: nano).\n" +
         "Guarda y cierra para volver a la TUI.\n\n" +
-        "Tip: export EDITOR=nano   (o vim)",
+        "Tip: export EDITOR=nano   (o el que quieras)",
     });
 
     screen.render();
 
-    const editor = process.env.EDITOR;
+    // ✅ Por defecto nano si EDITOR no está definido
+    const editor = (process.env.EDITOR && process.env.EDITOR.trim()) ? process.env.EDITOR.trim() : "nano";
 
-    // Cast a any para evitar restricciones de tipos (los .d.ts varían según versión)
     (screen as any).readEditor(
-      { value: initial, ...(editor ? { editor } : {}), name: "gh-pr-tui" },
+      { value: initial, editor, name: "gh-pr-tui" },
       (err: any, data: Buffer | string) => {
         help.destroy();
         screen.render();
 
         if (err) return resolve(null);
 
-        const value =
-          Buffer.isBuffer(data) ? data.toString("utf8") : String(data ?? "");
-
-        resolve(value.replace(/\s+$/g, "")); // trimEnd suave
+        const value = Buffer.isBuffer(data) ? data.toString("utf8") : String(data ?? "");
+        resolve(value.replace(/\s+$/g, ""));
       }
     );
   });
