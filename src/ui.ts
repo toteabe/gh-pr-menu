@@ -122,6 +122,7 @@ export class UI {
         inputOnFocus: true,
         keys: true,
         mouse: true,
+        vi: false,
         secret: !!opts.secret,
         censor: opts.secret ? true : undefined,
         value: opts.initial ?? "",
@@ -220,7 +221,7 @@ export class UI {
         inputOnFocus: true,
         keys: true,
         mouse: true,
-        vi: true,
+        vi: false,
         scrollbar: { ch: " ", track: { bg: "grey" }, style: { inverse: true } },
       });
 
@@ -237,6 +238,7 @@ export class UI {
       area.key(["C-s"], () => cleanup(area.getValue()));
 
       area.focus();
+      area.readInput();
       this.screen.render();
     });
   }

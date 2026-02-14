@@ -3,6 +3,7 @@ import { gh, git, mustOk } from "./gh";
 import { detectRepoFromCwd, extractPrNumber, splitRepo } from "./repo";
 import * as github from "./github";
 import * as diff from "./diff";
+import { promptCommentWithEditor } from "./prompt-comment-with-editor";
 
 function openUrl(url: string) {
   const platform = process.platform;
@@ -164,8 +165,11 @@ async function actionCreatePr(ui: UI) {
   if (!draftSel) return;
   const draftMode = draftSel.value === "yes";
 
-  const body = await ui.promptTextarea({ title: "Cuerpo del PR", help: "Ctrl+S para crear" });
-  if (body === null) return;
+  //const body = await ui.promptTextarea({ title: "Cuerpo del PR", help: "Ctrl+S para crear" });
+  //if (body === null) return;
+
+  const body = await promptCommentWithEditor(ui.screen, "Cuerpo del PR", "");
+  if (!body || !body.trim()) return;
 
   ui.setStatus("Push a origin...");
   const up = await git(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"]);
@@ -285,8 +289,10 @@ async function actionAddComment(ui: UI) {
   const repo = await getRepo(ui);
   const pr = await getPrNumber(ui);
 
-  const body = await ui.promptTextarea({ title: "Añadir comentario", help: "Ctrl+S: enviar | Esc: cancelar" });
-  if (body === null) return;
+  // const body = await ui.promptTextarea({ title: "Añadir comentario", help: "Ctrl+S: enviar | Esc: cancelar" });
+  // if (body === null) return;
+  const body = await promptCommentWithEditor(ui.screen, "Añadir comentario", "");
+  if (!body) return;
   if (!body.trim()) throw new Error("Comentario vacío.");
 
   ui.setStatus("Publicando comentario...");
@@ -401,7 +407,9 @@ async function actionInlineCommentGuided(ui: UI) {
   }
   if (!side || !line) throw new Error("No se seleccionó una línea válida.");
 
-  const body = await ui.promptTextarea({ title: "Comentario inline", help: "Ctrl+S: enviar" });
+  // const body = await ui.promptTextarea({ title: "Comentario inline", help: "Ctrl+S: enviar" });
+  // if (body === null) return;
+  const body = await promptCommentWithEditor(ui.screen, "Comentario inline", "");
   if (body === null) return;
   if (!body.trim()) throw new Error("Comentario vacío.");
 
@@ -425,11 +433,13 @@ async function actionClose(ui: UI) {
   });
   if (!delPick) return;
 
-  const comment = await ui.promptTextarea({
-    title: "Comentario al cerrar (opcional)",
-    help: "Deja vacío si no quieres comentar. Ctrl+S para continuar.",
-  });
-  if (comment === null) return;
+  // const comment = await ui.promptTextarea({
+  //   title: "Comentario al cerrar (opcional)",
+  //   help: "Deja vacío si no quieres comentar. Ctrl+S para continuar.",
+  // });
+  // if (comment === null) return;
+  const comment = await promptCommentWithEditor(ui.screen, "Comentario al cerrar (opcional)", "");
+  if ( !comment) return;
 
   ui.setStatus("Cerrando PR...");
   if (comment.trim()) await github.addIssueComment(repo, pr, comment);
